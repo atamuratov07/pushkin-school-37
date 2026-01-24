@@ -1,34 +1,45 @@
 import Image from 'next/image'
+import MobileNav from './mobile-nav'
+import Nav, { type NavItem } from './nav'
+
+const navItems: NavItem[] = [
+	{ label: 'Главная', href: '/' },
+	{ label: 'О нас', href: '/about' },
+	{ label: 'Новости', href: '/news' },
+	{ label: 'Учителя', href: '/teachers' },
+	{ label: 'Ученики', href: '/students' },
+	{ label: 'События', href: '/events' },
+	{ label: 'Контакты', href: '/contacts' },
+]
 
 export default function Header() {
 	return (
 		<header className=''>
-			<div className='flex py-3 px-5 justify-between sm:justify-center'>
-				<div className='flex items-center gap-2'>
-					<Image
-						className=''
-						src='/logo.svg'
-						alt='School logo'
-						width={80}
-						height={80}
-						priority
-					/>
-					<div className=''>
-						<h3>Школа №37</h3>
-						<span>имени А.С.Пушкина</span>
+			<div className='mx-auto'>
+				<div className='flex py-3 px-5 items-center justify-between sm:justify-center'>
+					<div className='flex items-center gap-2'>
+						<Image
+							className='h-12 w-12'
+							src='/logo.svg'
+							alt='School logo'
+							width={80}
+							height={80}
+							priority
+						/>
+						<div>
+							<h3 className='text-base font-semibold text-slate-900'>
+								Школа №37
+							</h3>
+							<span className='text-xs text-slate-500'>
+								имени А.С. Пушкина
+							</span>
+						</div>
 					</div>
+					<MobileNav items={navItems} />
 				</div>
-				<div>
-					<button>Burger Button</button>
-					<nav>Mobile Nav</nav>
+				<div className='hidden sm:block'>
+					<Nav items={navItems} />
 				</div>
-			</div>
-			<div className=''>
-				<nav className=''>
-					<ul className=''>
-						<li>Главная</li>
-					</ul>
-				</nav>
 			</div>
 		</header>
 	)
