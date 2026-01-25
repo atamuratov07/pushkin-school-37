@@ -1,4 +1,13 @@
+'use client'
+
+import {
+	NavigationMenu,
+	NavigationMenuItem,
+	NavigationMenuLink,
+	NavigationMenuList,
+} from '@/components/ui/navigation-menu'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 export type NavItem = {
 	label: string
@@ -12,22 +21,27 @@ export default function Nav({
 	items: NavItem[]
 	className?: string
 }) {
+	const pathname = usePathname()
 	return (
 		<div className='bg-secondary-background w-full px-5 flex justify-center'>
-			<nav className={`${className} py-4`} aria-label='Primary'>
-				<ul className='flex gap-11 flex-row items-center'>
-					{items.map(item => (
-						<li key={item.href}>
-							<Link
-								href={item.href}
-								className='text-secondary-foreground font-semibold'
-							>
-								{item.label}
-							</Link>
-						</li>
-					))}
-				</ul>
-			</nav>
+			<NavigationMenu>
+				<NavigationMenuList>
+					{items.map(item => {
+						const isActive = item.href === pathname
+						return (
+							<NavigationMenuItem key={item.href}>
+								<NavigationMenuLink
+									asChild
+									active={isActive}
+									className='text-background'
+								>
+									<Link href={item.href}>{item.label}</Link>
+								</NavigationMenuLink>
+							</NavigationMenuItem>
+						)
+					})}
+				</NavigationMenuList>
+			</NavigationMenu>
 		</div>
 	)
 }
