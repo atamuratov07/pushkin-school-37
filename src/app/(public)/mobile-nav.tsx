@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/shared/components/ui/button'
 import {
 	Sheet,
 	SheetClose,
@@ -8,7 +8,7 @@ import {
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger,
-} from '@/components/ui/sheet'
+} from '@/shared/components/ui/sheet'
 import { MenuIcon } from 'lucide-react'
 import Link from 'next/link'
 import type { NavItem } from './nav'

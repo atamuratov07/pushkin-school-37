@@ -20,7 +20,7 @@ export default function Header() {
 					<div className='flex items-center gap-2'>
 						<Image
 							className='h-12 w-12'
-							src='/logo.svg'
+							src='icons/logo.svg'
 							alt='School logo'
 							width={80}
 							height={80}
