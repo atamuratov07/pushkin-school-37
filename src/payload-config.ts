@@ -1,4 +1,6 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import path from 'path'
 import { buildConfig } from 'payload'
 import sharp from 'sharp'
@@ -9,6 +11,9 @@ import { Users } from './collections/Users'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+const isProd = process.env.NODE_ENV === 'production'
+const useVercelPostgres = isProd && !!process.env.POSTGRES_URL
 
 export default buildConfig({
 	admin: {
@@ -22,9 +27,19 @@ export default buildConfig({
 	typescript: {
 		outputFile: path.resolve(dirname, 'payload-types.ts'),
 	},
-	db: postgresAdapter({
-		pool: { connectionString: process.env.DATABASE_URL || '' },
-	}),
+	db: useVercelPostgres
+		? vercelPostgresAdapter()
+		: postgresAdapter({
+				pool: { connectionString: process.env.DATABASE_URL || '' },
+			}),
 	sharp,
-	plugins: [],
+	plugins: [
+		vercelBlobStorage({
+			collections: {
+				media: true,
+			},
+			token: process.env.BLOB_READ_WRITE_TOKEN,
+			clientUploads: true,
+		}),
+	],
 })
