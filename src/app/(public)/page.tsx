@@ -19,14 +19,14 @@ const events = [
 	},
 ]
 
-export default function Home() {
+export default function HomePage() {
 	const {
 		props: { srcSet },
 	} = getImageProps({
 		alt: 'Main Background Image',
 		width: 128,
 		height: 128,
-		src: '/images/bg-image-1.png',
+		src: '/images/home/bg-image-1.png',
 	})
 	const backgroundImage = getBackgroundImage(srcSet)
 	const style = { backgroundImage }
@@ -54,7 +54,7 @@ export default function Home() {
 				<div className='w-full grid grid-cols-[1fr] md:grid-cols-[1fr_1fr]'>
 					<div className='w-full order-2 md:order-1'>
 						<Image
-							src='/images/image-2.png'
+							src='/images/home/image-2.png'
 							width={720}
 							height={450}
 							alt='Image'
@@ -99,7 +99,7 @@ export default function Home() {
 					</div>
 					<div className='w-full'>
 						<Image
-							src='/images/image-1.png'
+							src='/images/home/image-1.png'
 							width={720}
 							height={450}
 							alt='Image'
@@ -123,7 +123,7 @@ export default function Home() {
 								alt: 'News Card Background Image',
 								width: 200,
 								height: 200,
-								src: '/images/image-3.png',
+								src: '/images/home/image-3.png',
 							})
 							const backgroundImage = getBackgroundImage(srcSet)
 							const style = {
