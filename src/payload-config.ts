@@ -1,6 +1,8 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { ru } from '@payloadcms/translations/languages/ru'
+import { en } from '@payloadcms/translations/languages/en'
 import path from 'path'
 import { buildConfig } from 'payload'
 import sharp from 'sharp'
@@ -33,6 +35,26 @@ export default buildConfig({
 				pool: { connectionString: process.env.DATABASE_URL || '' },
 			}),
 	sharp,
+	i18n: {
+		fallbackLanguage: 'ru',
+		supportedLanguages: { ru, en },
+	},
+	localization: {
+		locales: [
+			{
+				code: 'ru',
+				label: 'Russian',
+			},
+			{
+				code: 'en',
+				label: 'English',
+				fallbackLocale: 'ru',
+			},
+		],
+		defaultLocale: 'ru',
+		fallback: true,
+	},
+
 	plugins: [
 		vercelBlobStorage({
 			collections: {
