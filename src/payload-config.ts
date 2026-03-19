@@ -6,8 +6,8 @@ import { buildConfig } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
-import { Media } from './collections/Media'
-import { Users } from './collections/Users'
+import { Media } from './collections/Media.ts'
+import { Users } from './collections/Users.ts'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
