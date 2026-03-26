@@ -1,8 +1,7 @@
-import type { MigrateDownArgs, MigrateUpArgs } from '@payloadcms/db-postgres'
-import { sql } from '@payloadcms/db-postgres'
+import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
-	await db.execute(sql`
+  await db.execute(sql`
    CREATE TYPE "public"."_locales" AS ENUM('ru', 'en');
   CREATE TYPE "public"."enum_team_members_role_type" AS ENUM('teacher', 'administration', 'staff');
   CREATE TYPE "public"."enum_contact_submissions_status" AS ENUM('new', 'in-progress', 'resolved', 'spam');
@@ -261,9 +260,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"_parent_id" integer NOT NULL
   );
   
-  DROP INDEX "users_email_idx";
-  ALTER TABLE "users" ALTER COLUMN "email" DROP NOT NULL;
-  ALTER TABLE "users" ADD COLUMN "username" varchar NOT NULL;
   ALTER TABLE "payload_locked_documents_rels" ADD COLUMN "news_id" integer;
   ALTER TABLE "payload_locked_documents_rels" ADD COLUMN "events_id" integer;
   ALTER TABLE "payload_locked_documents_rels" ADD COLUMN "team_members_id" integer;
@@ -343,7 +339,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_events_fk" FOREIGN KEY ("events_id") REFERENCES "public"."events"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_team_members_fk" FOREIGN KEY ("team_members_id") REFERENCES "public"."team_members"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_contact_submissions_fk" FOREIGN KEY ("contact_submissions_id") REFERENCES "public"."contact_submissions"("id") ON DELETE cascade ON UPDATE no action;
-  CREATE UNIQUE INDEX "users_username_idx" ON "users" USING btree ("username");
   CREATE INDEX "payload_locked_documents_rels_news_id_idx" ON "payload_locked_documents_rels" USING btree ("news_id");
   CREATE INDEX "payload_locked_documents_rels_events_id_idx" ON "payload_locked_documents_rels" USING btree ("events_id");
   CREATE INDEX "payload_locked_documents_rels_team_members_id_idx" ON "payload_locked_documents_rels" USING btree ("team_members_id");
@@ -351,12 +346,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "media" DROP COLUMN "alt";`)
 }
 
-export async function down({
-	db,
-	payload,
-	req,
-}: MigrateDownArgs): Promise<void> {
-	await db.execute(sql`
+export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
+  await db.execute(sql`
    ALTER TABLE "media_locales" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "news" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "news_locales" DISABLE ROW LEVEL SECURITY;
@@ -421,15 +412,11 @@ export async function down({
   
   ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_contact_submissions_fk";
   
-  DROP INDEX "users_username_idx";
   DROP INDEX "payload_locked_documents_rels_news_id_idx";
   DROP INDEX "payload_locked_documents_rels_events_id_idx";
   DROP INDEX "payload_locked_documents_rels_team_members_id_idx";
   DROP INDEX "payload_locked_documents_rels_contact_submissions_id_idx";
-  ALTER TABLE "users" ALTER COLUMN "email" SET NOT NULL;
   ALTER TABLE "media" ADD COLUMN "alt" varchar NOT NULL;
-  CREATE UNIQUE INDEX "users_email_idx" ON "users" USING btree ("email");
-  ALTER TABLE "users" DROP COLUMN "username";
   ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "news_id";
   ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "events_id";
   ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "team_members_id";

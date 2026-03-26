@@ -123,18 +123,20 @@ export interface Config {
 }
 export interface UserAuthOperations {
   forgotPassword: {
-    username: string;
+    email: string;
+    password: string;
   };
   login: {
+    email: string;
     password: string;
-    username: string;
   };
   registerFirstUser: {
+    email: string;
     password: string;
-    username: string;
   };
   unlock: {
-    username: string;
+    email: string;
+    password: string;
   };
 }
 /**
@@ -145,8 +147,7 @@ export interface User {
   id: number;
   updatedAt: string;
   createdAt: string;
-  email?: string | null;
-  username: string;
+  email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
   salt?: string | null;
@@ -358,7 +359,6 @@ export interface UsersSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   email?: T;
-  username?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
   salt?: T;
