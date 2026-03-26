@@ -1,8 +1,11 @@
+import { isLocale } from '@/i18n/config'
+import { getPayloadClient } from '@/shared/lib/payload'
+import { Footer } from '@/widgets/footer/footer'
 import type { Metadata } from 'next'
 import { Montserrat } from 'next/font/google'
-import '../globals.css'
+import { notFound } from 'next/navigation'
+import './globals.css'
 import Header from './header'
-import { Footer } from '@/widgets/footer/footer'
 
 const montserrat = Montserrat({
 	display: 'swap',
@@ -16,13 +19,19 @@ export const metadata: Metadata = {
 	description: '',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
+	params,
 }: Readonly<{
 	children: React.ReactNode
+	params: Promise<{ locale: string }>
 }>) {
+	const { locale } = await params
+
+	if (!isLocale(locale)) notFound()
+
 	return (
-		<html lang='ru'>
+		<html lang={locale}>
 			<body className={`${montserrat.className} antialiased`}>
 				<Header />
 				{children}
