@@ -8,8 +8,18 @@ import { buildConfig } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
+import { AboutPage } from './globals/AboutPage.ts'
+import { ContactSubmissions } from './collections/ContactSubmissions.ts'
+import { Events } from './collections/Events.ts'
 import { Media } from './collections/Media.ts'
+import { News } from './collections/News.ts'
+import { TeamMembers } from './collections/TeamMembers.ts'
 import { Users } from './collections/Users.ts'
+import { EventsPage } from './globals/EventsPage.ts'
+import { Homepage } from './globals/Homepage.ts'
+import { NewsPage } from './globals/NewsPage.ts'
+import { SiteSettings } from './globals/SiteSettings.ts'
+import { TeamPage } from './globals/TeamPage.ts'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -24,7 +34,8 @@ export default buildConfig({
 			baseDir: path.resolve(dirname),
 		},
 	},
-	collections: [Users, Media],
+	collections: [Users, Media, News, Events, TeamMembers, ContactSubmissions],
+	globals: [SiteSettings, Homepage, AboutPage, NewsPage, EventsPage, TeamPage],
 	secret: process.env.PAYLOAD_SECRET || '',
 	typescript: {
 		outputFile: path.resolve(dirname, 'payload-types.ts'),

@@ -1,7 +1,7 @@
 import { Button } from '@/shared/components/ui/button'
 import { Separator } from '@/shared/components/ui/separator'
 import { getBackgroundImage } from '@/shared/lib/utils'
-import { Form } from '@/widgets/form/form'
+import { ContactForm } from '@/widgets/form/form'
 import Image, { getImageProps } from 'next/image'
 
 const events = [
@@ -166,7 +166,7 @@ export default function HomePage() {
 				</div>
 			</section>
 			<section className='w-full py-5 md:py-20 bg-[#1D519A] flex justify-center'>
-				<Form />
+				<ContactForm />
 			</section>
 		</main>
 	)

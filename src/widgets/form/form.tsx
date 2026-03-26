@@ -21,7 +21,7 @@ const formSchema = z.object({
 	message: z.string().min(10, 'Message must be at least 10 characters'),
 })
 
-export function Form() {
+export function ContactForm() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
