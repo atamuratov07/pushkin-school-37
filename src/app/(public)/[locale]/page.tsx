@@ -204,6 +204,7 @@ export default async function HomePage({
 			</section>
 			<section className='w-full py-5 md:py-20 bg-[#1D519A] flex justify-center'>
 				<ContactForm
+					locale={locale}
 					title={homepage.contactSection.title}
 					description={homepage.contactSection.description}
 					submitLabel={homepage.contactSection.submitButtonLabel}

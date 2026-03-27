@@ -1311,7 +1311,7 @@ export async function runSeed(options: SeedRunOptions = {}) {
 	}
 }
 
-if (process.argv.includes('--run')) {
+if (process.argv.includes('seed-prod')) {
 	try {
 		await runSeed()
 	} catch (error) {

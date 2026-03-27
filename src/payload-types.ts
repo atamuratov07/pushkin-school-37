@@ -248,6 +248,8 @@ export interface TeamMember {
   createdAt: string;
 }
 /**
+ * Incoming messages from the public contact form.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact-submissions".
  */
