@@ -3,6 +3,9 @@ export const en = {
 		home: 'Home',
 		about: 'About',
 	},
+	events: {
+		detailsButton: 'Learn more',
+	},
 	form: {
 		nameRequired: 'Enter your name',
 	},

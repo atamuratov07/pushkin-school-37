@@ -26,10 +26,10 @@ export default function Nav({
 		<div className='bg-secondary-background w-full px-5 flex justify-center'>
 			<NavigationMenu>
 				<NavigationMenuList>
-					{items.map(item => {
+					{items.map((item, i) => {
 						const isActive = item.href === pathname
 						return (
-							<NavigationMenuItem key={item.href}>
+							<NavigationMenuItem key={i}>
 								<NavigationMenuLink
 									asChild
 									active={isActive}

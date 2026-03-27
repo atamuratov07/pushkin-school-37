@@ -1,17 +1,16 @@
-import Image from 'next/image'
-
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardTitle,
 } from '@/shared/components/ui/card'
+import { ImageFallback } from '@/shared/components/ui/image-fallback'
 import { cn } from '@/shared/lib/utils'
 
 type AdminMemberCardProps = {
 	name: string
 	position: string
-	profileImageSrc: string
+	profileImageSrc?: string | null
 	className?: string
 }
 
@@ -30,11 +29,12 @@ export function AdminMemberCard({
 		>
 			<CardContent className='flex w-full flex-col items-center'>
 				<div className='relative mb-1 md:mb-2.5 h-80 w-full overflow-hidden rounded-[5px]'>
-					<Image
+					<ImageFallback
 						src={profileImageSrc}
 						alt={name}
 						fill
 						className='object-cover'
+						fallbackClassName='absolute inset-0'
 					/>
 				</div>
 				<CardTitle className='text-base md:text-xl font-semibold'>

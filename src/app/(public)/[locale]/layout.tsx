@@ -30,12 +30,20 @@ export default async function RootLayout({
 
 	if (!isLocale(locale)) notFound()
 
+	const payload = await getPayloadClient()
+	const siteSettings = await payload.findGlobal({
+		slug: 'site-settings',
+		locale,
+		depth: 1,
+		overrideAccess: false,
+	})
+
 	return (
 		<html lang={locale}>
 			<body className={`${montserrat.className} antialiased`}>
-				<Header />
+				<Header siteSettings={siteSettings} locale={locale} />
 				{children}
-				<Footer />
+				<Footer siteSettings={siteSettings} locale={locale} />
 			</body>
 		</html>
 	)

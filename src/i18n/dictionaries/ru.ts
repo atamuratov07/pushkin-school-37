@@ -3,6 +3,9 @@ export const ru = {
 		home: 'Главная',
 		about: 'О нас',
 	},
+	events: {
+		detailsButton: 'Подробнее',
+	},
 	form: {
 		nameRequired: 'Введите имя',
 	},

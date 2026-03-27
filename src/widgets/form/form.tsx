@@ -21,7 +21,17 @@ const formSchema = z.object({
 	message: z.string().min(10, 'Message must be at least 10 characters'),
 })
 
-export function ContactForm() {
+type ContactFormProps = {
+	title?: string
+	description?: string
+	submitLabel?: string
+}
+
+export function ContactForm({
+	title = 'Свяжитесь с нами!',
+	description = 'Заполните анкету чтобы мы могли выйти на обратный связь',
+	submitLabel = 'Отправить',
+}: ContactFormProps) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -30,17 +40,19 @@ export function ContactForm() {
 			message: '',
 		},
 	})
+
 	const onSubmit = (data: z.infer<typeof formSchema>) => {
 		console.log(data)
 	}
+
 	return (
 		<div className='w-full max-w-175 p-5 flex flex-col gap-7.5 md:gap-10'>
 			<div className=''>
 				<h3 className='text-white font-bold text-xl md:text-3xl text-center'>
-					Свяжитесь с нами!
+					{title}
 				</h3>
 				<p className='text-white text-sm md:text-base text-center mt-3'>
-					Заполните анкету чтобы мы могли выйти на обратный связь
+					{description}
 				</p>
 			</div>
 			<form id='contact-form' onSubmit={form.handleSubmit(onSubmit)}>
@@ -61,7 +73,6 @@ export function ContactForm() {
 									id='contact-form-name'
 									aria-invalid={fieldState.invalid}
 									autoComplete='off'
-									className=''
 								/>
 								{fieldState.invalid && (
 									<FieldError errors={[fieldState.error]} />
@@ -120,7 +131,7 @@ export function ContactForm() {
 							type='submit'
 							className='w-full rounded-none h-10 bg-black text-white text-base font-normal cursor-pointer'
 						>
-							Отправить
+							{submitLabel}
 						</Button>
 					</Field>
 				</FieldGroup>

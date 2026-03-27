@@ -1,18 +1,27 @@
+import type { Locale } from '@/i18n/config'
+import type { SiteSetting } from '@/payload-types'
+import { getMediaAlt, getMediaUrl } from '@/shared/lib/media'
+import { resolveHref } from '@/shared/lib/utils'
 import Image from 'next/image'
 import MobileNav from './mobile-nav'
 import Nav, { type NavItem } from './nav'
 
-const navItems: NavItem[] = [
-	{ label: 'Главная', href: '/' },
-	{ label: 'О нас', href: '/about' },
-	{ label: 'Новости', href: '/news' },
-	{ label: 'Учителя', href: '/teachers' },
-	{ label: 'Ученики', href: '/students' },
-	{ label: 'События', href: '/events' },
-	{ label: 'Контакты', href: '/contacts' },
-]
+export default function Header({
+	siteSettings,
+	locale,
+}: {
+	siteSettings: SiteSetting
+	locale: Locale
+}) {
+	const navItems: NavItem[] =
+		siteSettings.headerNavigation?.map(item => ({
+			label: item.label,
+			href: resolveHref(locale, item.href),
+		})) ?? []
 
-export default function Header() {
+	const logoUrl = getMediaUrl(siteSettings.logo) ?? '/icons/logo.svg'
+	const logoAlt = getMediaAlt(siteSettings.logo, siteSettings.schoolName)
+
 	return (
 		<header className=''>
 			<div className='mx-auto'>
@@ -20,18 +29,18 @@ export default function Header() {
 					<div className='flex items-center gap-2'>
 						<Image
 							className='h-12 w-12'
-							src='icons/logo.svg'
-							alt='School logo'
+							src={logoUrl}
+							alt={logoAlt}
 							width={80}
 							height={80}
 							priority
 						/>
 						<div>
 							<h3 className='text-base font-semibold text-slate-900'>
-								Школа №37
+								{siteSettings.schoolName}
 							</h3>
 							<span className='text-xs text-slate-500'>
-								имени А.С. Пушкина
+								{siteSettings.schoolSubtitle ?? ''}
 							</span>
 						</div>
 					</div>
