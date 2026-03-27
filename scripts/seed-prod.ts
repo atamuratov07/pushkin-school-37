@@ -102,6 +102,10 @@ type ArrayRowWithOptionalId = {
 	id?: string | null
 }
 
+export type SeedRunOptions = {
+	assetBaseURL?: string
+}
+
 const mediaDefinitions = {
 	logo: {
 		alt: {
@@ -447,14 +451,45 @@ async function assertFileExists(relativePath: string) {
 	return absolutePath
 }
 
+function buildAssetURL(assetBaseURL: string, sourceRelativePath: string) {
+	const normalizedBaseURL = assetBaseURL.endsWith('/')
+		? assetBaseURL
+		: `${assetBaseURL}/`
+	const normalizedRelativePath = sourceRelativePath.startsWith('/')
+		? sourceRelativePath.slice(1)
+		: sourceRelativePath
+
+	return new URL(normalizedRelativePath, normalizedBaseURL)
+}
+
 async function createUploadSource(
 	tempDir: string,
 	sourceRelativePath: string,
 	uploadFilename: string,
+	assetBaseURL?: string,
 ) {
-	const sourcePath = await assertFileExists(sourceRelativePath)
 	const uploadPath = path.join(tempDir, uploadFilename)
 
+	if (assetBaseURL) {
+		const sourceURL = buildAssetURL(assetBaseURL, sourceRelativePath)
+		const response = await fetch(sourceURL, {
+			cache: 'no-store',
+			redirect: 'follow',
+		})
+
+		if (!response.ok) {
+			throw new Error(
+				`Failed to fetch seed asset ${sourceURL.toString()}: ${response.status} ${response.statusText}`,
+			)
+		}
+
+		const fileBuffer = Buffer.from(await response.arrayBuffer())
+		await fs.writeFile(uploadPath, fileBuffer)
+
+		return uploadPath
+	}
+
+	const sourcePath = await assertFileExists(sourceRelativePath)
 	await fs.copyFile(sourcePath, uploadPath)
 
 	return uploadPath
@@ -464,6 +499,7 @@ async function ensureMedia(
 	payload: PayloadInstance,
 	tempDir: string,
 	definition: SeedMediaDefinition,
+	assetBaseURL?: string,
 ) {
 	const existing = await payload.find({
 		collection: 'media',
@@ -484,6 +520,7 @@ async function ensureMedia(
 			tempDir,
 			definition.sourcePath,
 			definition.uploadFilename,
+			assetBaseURL,
 		)
 
 		const created = await payload.create({
@@ -1215,7 +1252,7 @@ async function seedTeamMembers(payload: PayloadInstance, mediaIds: MediaIds) {
 	}
 }
 
-async function main() {
+export async function runSeed(options: SeedRunOptions = {}) {
 	console.log('Starting seed script...')
 	console.log(
 		`Database env: ${
@@ -1239,6 +1276,9 @@ async function main() {
 
 	try {
 		console.log('Payload initialized. Seeding content for ru and en...')
+		if (options.assetBaseURL) {
+			console.log(`Seeding media from remote assets at ${options.assetBaseURL}`)
+		}
 
 		const mediaIds = {} as MediaIds
 
@@ -1247,7 +1287,12 @@ async function main() {
 			MediaKey,
 			SeedMediaDefinition,
 		][]) {
-			mediaIds[key] = await ensureMedia(payload, tempDir, definition)
+			mediaIds[key] = await ensureMedia(
+				payload,
+				tempDir,
+				definition,
+				options.assetBaseURL,
+			)
 		}
 
 		console.log('Seeding globals...')
@@ -1266,10 +1311,12 @@ async function main() {
 	}
 }
 
-try {
-	await main()
-} catch (error) {
-	console.error('Production seed failed.')
-	console.error(error)
-	process.exit(1)
+if (process.argv.includes('--run')) {
+	try {
+		await runSeed()
+	} catch (error) {
+		console.error('Production seed failed.')
+		console.error(error)
+		process.exit(1)
+	}
 }

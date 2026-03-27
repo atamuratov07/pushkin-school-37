@@ -10,7 +10,7 @@
 		"lint": "eslint",
 		"payload": "payload",
 		"ci": "payload migrate && next build",
-		"seed:prod": "payload run ./scripts/seed-prod.ts"
+		"seed:prod": "payload run ./scripts/seed-prod.ts --run"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^5.2.2",
