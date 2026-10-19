@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pushkin School 37
 
-## Getting Started
+Website for School 37 in Tashkent, with an admin panel where school staff manage the content themselves: news, events, staff profiles, photos and the text of every page. Messages sent through the contact form arrive in an inbox inside the admin panel.
 
-First, run the development server:
+Live at https://pushkin-school-37.vercel.app
+
+The public site is in Russian and English, at `/ru/...` and `/en/...`. Page content is translated per language in the admin panel.
+
+## Pages
+
+Home, About, Teachers, Students, News and Events, plus a contact form. The admin panel is at `/admin`.
+
+## Tech stack
+
+| Part        | Choice                                                                |
+| ----------- | --------------------------------------------------------------------- |
+| Framework   | Next.js 15 (App Router), React 19, TypeScript                         |
+| CMS         | Payload CMS 3, running inside the same Next.js app                    |
+| Database    | PostgreSQL: Vercel Postgres in production, Docker Compose locally     |
+| File storage| Vercel Blob for uploaded images                                       |
+| UI          | Tailwind CSS 4, shadcn/ui, react-hook-form with Zod                   |
+| Hosting     | Vercel                                                                |
+
+## Content model
+
+- **Collections** (lists of entries): News, Events, Team members, Media, Contact submissions and admin Users.
+- **Globals** (one document each): the text of the Home, About, Team, News and Events pages, and site settings such as contact details.
+
+Schema changes are applied through Payload migrations in `src/migrations/`.
+
+## Running it locally
+
+Requires Node.js and Docker.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+docker compose up -d     # Postgres 16 on port 5432, database school_cms_dev
+npm install
+npm run dev              # http://localhost:3000, admin panel at /admin
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create a `.env` file first:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/school_cms_dev
+PAYLOAD_SECRET=any-long-random-string
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+On the first visit to `/admin`, Payload asks you to create the first admin user.
 
-## Learn More
+## Deploying
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Vercel runs `npm run ci`, which applies pending migrations and then builds the site. Production needs `POSTGRES_URL` (Vercel Postgres), `PAYLOAD_SECRET` and `BLOB_READ_WRITE_TOKEN` (Vercel Blob).
